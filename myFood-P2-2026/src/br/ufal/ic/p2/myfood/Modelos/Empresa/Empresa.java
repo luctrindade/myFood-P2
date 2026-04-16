@@ -3,7 +3,7 @@ package br.ufal.ic.p2.myfood.Modelos.Empresa;
 public class Empresa {
     private int id;
     private int donoId;
-    private String name;
+    private String nome;
     private String endereco;
     private String tipoEmpresa;
 
@@ -11,10 +11,10 @@ public class Empresa {
 
     }
 
-    public Empresa(int id, int donoId, String name, String endereco, String tipoEmpresa){
+    public Empresa(int id, int donoId, String nome, String endereco, String tipoEmpresa){
         this.id = id;
         this.donoId = donoId;
-        this.name = name;
+        this.nome = nome;
         this.endereco = endereco;
         this.tipoEmpresa = tipoEmpresa;
     }
@@ -27,12 +27,12 @@ public class Empresa {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getNome() {
+        return nome;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String nome) {
+        this.nome = nome;
     }
 
     public int getDonoId() {

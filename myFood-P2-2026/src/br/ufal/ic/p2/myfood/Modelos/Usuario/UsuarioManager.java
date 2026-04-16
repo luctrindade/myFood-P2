@@ -17,6 +17,14 @@ public class UsuarioManager {
         carregarDados();
     }
 
+    public Usuario getUsuario(int id) throws UsuarioNaoExisteException{
+        for(Usuario u : usuarioList){
+            if(u.getId() == id)
+                return u;
+        }
+        throw new UsuarioNaoExisteException();
+    }
+
     @SuppressWarnings("unchecked")
     private void carregarDados(){
         try (XMLDecoder decoder = new XMLDecoder(new FileInputStream("usuarios.xml"))){
@@ -59,10 +67,6 @@ public class UsuarioManager {
             if(usuario.getEmail().equals(email)){
                 throw new UsuarioJaExisteException();
             }
-            if(usuario instanceof Dono){
-                if(((Dono) usuario).getCpf().equals(cpf))
-                    throw new CpfInvalidoException();
-            }
         }
         this.usuarioList.add(new Dono(proximoID,nome, email, senha, endereco,cpf));
         proximoID ++;
@@ -103,13 +107,13 @@ public class UsuarioManager {
                 if(usuario instanceof Dono)
                     return ((Dono) usuario).getCpf();
                 else
-                    throw new Exception("Atributo invalido");
+                    throw new AtributoInvalidoException();
 
             case "senha":
                 return usuario.getSenha();
 
             default:
-                throw new Exception("Atributo Invalido");
+                throw new AtributoInvalidoException();
         }
     }
 
