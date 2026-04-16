@@ -4,13 +4,29 @@ import br.ufal.ic.p2.myfood.Modelos.Exceptions.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 public class UsuarioManager {
     List<Usuario> usuarioList;
     private int proximoID;
     public UsuarioManager(){
-        this.usuarioList = new ArrayList<Usuario>();
-        this.proximoID = 1;
+        carregarDados();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void carregarDados(){
+        try (XMLDecoder decoder = new XMLDecoder(new FileInputStream("usuarios.xml"))){
+            this.usuarioList = (List<Usuario>) decoder.readObject();
+            this.proximoID = (int) decoder.readObject();
+
+        } catch (Exception e){
+            this.usuarioList = new ArrayList<>();
+            this.proximoID = 1;
+        }
     }
 
     private void validarDados(String nome, String email, String senha, String endereco){
@@ -22,6 +38,15 @@ public class UsuarioManager {
             throw new SenhaInvalidaException();
         if(endereco == null || endereco.isBlank())
             throw new EnderecoInvalidoException();
+    }
+
+    public void salvarDados(){
+        try (XMLEncoder encoder = new XMLEncoder(new FileOutputStream("usuarios.xml"))){
+            encoder.writeObject(this.usuarioList);
+            encoder.writeObject(this.proximoID);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void criarUsuario(String nome, String email, String senha, String endereco, String cpf)
@@ -102,7 +127,12 @@ public class UsuarioManager {
     }
 
     public void zerarDados(){
-        usuarioList.clear();
-        proximoID = 1;
+        this.usuarioList.clear();
+        this.proximoID = 1;
+
+        File arquivo = new File("usuarios.xml");
+        if(arquivo.exists()){
+            arquivo.delete();
+        }
     }
 }

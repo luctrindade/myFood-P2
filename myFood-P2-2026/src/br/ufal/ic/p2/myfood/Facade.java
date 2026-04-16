@@ -10,7 +10,7 @@ public class Facade {
         usuarioManager.zerarDados();
     }
     public void encerrarSistema(){
-
+        usuarioManager.salvarDados();
     }
 
     public void criarUsuario(String nome, String email, String senha, String endereco) throws Exception{
