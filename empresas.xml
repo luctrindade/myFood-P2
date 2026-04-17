@@ -12,6 +12,9 @@
     <void property="id">
      <int>1</int>
     </void>
+    <void property="nome">
+     <string>Pastelaria do Carlos</string>
+    </void>
     <void property="tipoCozinha">
      <string>brasileira</string>
     </void>
@@ -30,6 +33,9 @@
     </void>
     <void property="id">
      <int>2</int>
+    </void>
+    <void property="nome">
+     <string>Sushi do Carlos</string>
     </void>
     <void property="tipoCozinha">
      <string>japonesa</string>
@@ -50,6 +56,9 @@
     <void property="id">
      <int>3</int>
     </void>
+    <void property="nome">
+     <string>Pastelaria do Carlos</string>
+    </void>
     <void property="tipoCozinha">
      <string>brasileira</string>
     </void>
@@ -68,6 +77,9 @@
     </void>
     <void property="id">
      <int>4</int>
+    </void>
+    <void property="nome">
+     <string>Sorveteria do Roberto</string>
     </void>
     <void property="tipoCozinha">
      <string>brasileira</string>
