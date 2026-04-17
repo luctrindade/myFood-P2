@@ -43,7 +43,7 @@ public class Produto {
         this.nome = nome;
     }
 
-    public double getValor() {
+    public float getValor() {
         return valor;
     }
 

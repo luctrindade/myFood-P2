@@ -2,47 +2,6 @@
 <java version="25.0.2" class="java.beans.XMLDecoder">
  <object class="java.util.ArrayList">
   <void method="add">
-   <object class="br.ufal.ic.p2.myfood.Modelos.Usuario.Cliente">
-    <void property="email">
-     <string>lucas@ufal.com.br</string>
-    </void>
-    <void property="endereco">
-     <string>Rua Exemplo N 321</string>
-    </void>
-    <void property="id">
-     <int>1</int>
-    </void>
-    <void property="nome">
-     <string>Lucas</string>
-    </void>
-    <void property="senha">
-     <string>123senha</string>
-    </void>
-   </object>
-  </void>
-  <void method="add">
-   <object class="br.ufal.ic.p2.myfood.Modelos.Usuario.Dono">
-    <void property="cpf">
-     <string>544.732.410-68</string>
-    </void>
-    <void property="email">
-     <string>carlos@ufal.com.br</string>
-    </void>
-    <void property="endereco">
-     <string>Rua Exemplo N 321</string>
-    </void>
-    <void property="id">
-     <int>2</int>
-    </void>
-    <void property="nome">
-     <string>CarlosDono</string>
-    </void>
-    <void property="senha">
-     <string>123senha</string>
-    </void>
-   </object>
-  </void>
-  <void method="add">
    <object class="br.ufal.ic.p2.myfood.Modelos.Usuario.Dono">
     <void property="cpf">
      <string>544.732.410-68</string>
@@ -54,7 +13,7 @@
      <string>Rua Exemplo N 321</string>
     </void>
     <void property="id">
-     <int>3</int>
+     <int>1</int>
     </void>
     <void property="nome">
      <string>RobertoDono</string>
@@ -65,5 +24,5 @@
    </object>
   </void>
  </object>
- <int>4</int>
+ <int>2</int>
 </java>
