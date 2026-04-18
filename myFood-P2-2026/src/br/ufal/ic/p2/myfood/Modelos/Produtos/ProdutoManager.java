@@ -49,6 +49,24 @@ public class ProdutoManager {
         }
     }
 
+    public Produto getProdutoById(int id) throws Exception{
+        for(Produto p : produtoList){
+            if(p.getId() == id){
+                return p;
+            }
+        }
+        throw new ProdutoNaoEncontradoException();
+    }
+
+    public Produto getProdutoPorNomeEmpresa(String nome, int empresaId) throws Exception{
+        for(Produto p : produtoList){
+            if(p.getEmpresaId() == empresaId && p.getNome().equals(nome)){
+                return p;
+            }
+        }
+        throw new ProdutoInvalidoException();
+    }
+
     private void validarProdutos(String nome, float valor, String categoria) throws Exception{
         if(nome == null || nome.isBlank()) throw new NomeInvalidoException();
         if(valor < 0) throw new ValorInvalidoException();

@@ -1,6 +1,7 @@
 package br.ufal.ic.p2.myfood;
 
 import br.ufal.ic.p2.myfood.Modelos.Empresa.EmpresaManager;
+import br.ufal.ic.p2.myfood.Modelos.Pedidos.PedidoManager;
 import br.ufal.ic.p2.myfood.Modelos.Produtos.ProdutoManager;
 import br.ufal.ic.p2.myfood.Modelos.Usuario.UsuarioManager;
 import br.ufal.ic.p2.myfood.Modelos.Exceptions.*;
@@ -9,22 +10,26 @@ public class Facade {
     private UsuarioManager usuarioManager;
     private EmpresaManager empresaManager;
     private ProdutoManager produtoManager;
+    private PedidoManager pedidoManager;
 
     public Facade(){
         this.usuarioManager = new UsuarioManager();
         this.empresaManager = new EmpresaManager(this.usuarioManager);
         this.produtoManager = new ProdutoManager(this.empresaManager);
+        this.pedidoManager = new PedidoManager(this.usuarioManager,this.empresaManager, this.produtoManager);
     }
 
     public void zerarSistema(){
         usuarioManager.zerarDados();
         empresaManager.zerarDados();
         produtoManager.zerarDados();
+        pedidoManager.zerarDados();
     }
     public void encerrarSistema(){
         usuarioManager.salvarDados();
         empresaManager.salvarDados();
         produtoManager.salvarDados();
+        pedidoManager.salvarDados();
     }
 
     public void criarUsuario(String nome, String email, String senha, String endereco) throws Exception{
@@ -72,5 +77,32 @@ public class Facade {
 
     public String listarProdutos(int empresa) throws Exception{
         return produtoManager.listarProdutos(empresa);
+    }
+
+    public int criarPedido(int cliente, int empresa) throws Exception{
+        return pedidoManager.criarPedido(cliente, empresa);
+    }
+
+    public int getNumeroPedido(int cliente, int empresa, int indice) throws Exception{
+        return pedidoManager.getNumeroPedido(cliente,empresa,indice);
+    }
+    public void adicionarProduto(int numero, int produto) throws Exception{
+        try{
+            pedidoManager.adicionarProduto(numero,produto);
+        }
+        catch (Exception e){
+            if(e.getMessage().equals("Pedido nao encontrado")) throw new PedidoAbertoException();
+            throw e;
+        }
+    }
+    public String getPedidos(int numero, String atributo) throws Exception{
+        return pedidoManager.getPedidos(numero,atributo);
+    }
+
+    public void fecharPedido(int numero) throws  Exception{
+        pedidoManager.fecharPedido(numero);
+    }
+    public void removerProduto(int pedido, String produto) throws Exception{
+        pedidoManager.removerProduto(pedido,produto);
     }
 }

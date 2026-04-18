@@ -23,7 +23,7 @@
   <void method="add">
    <object class="br.ufal.ic.p2.myfood.Modelos.Produtos.Produto">
     <void property="categoria">
-     <string>bebida</string>
+     <string>alimento</string>
     </void>
     <void property="empresaId">
      <int>1</int>
@@ -32,10 +32,10 @@
      <int>2</int>
     </void>
     <void property="nome">
-     <string>Refrigerante</string>
+     <string>Sorvete chocolate</string>
     </void>
     <void property="valor">
-     <float>3.0</float>
+     <float>1.4</float>
     </void>
    </object>
   </void>
@@ -45,19 +45,38 @@
      <string>bebida</string>
     </void>
     <void property="empresaId">
-     <int>2</int>
+     <int>1</int>
     </void>
     <void property="id">
      <int>3</int>
     </void>
     <void property="nome">
-     <string>Refrigerante de laranja</string>
+     <string>Refrigerante</string>
     </void>
     <void property="valor">
-     <float>4.4</float>
+     <float>3.4</float>
+    </void>
+   </object>
+  </void>
+  <void method="add">
+   <object class="br.ufal.ic.p2.myfood.Modelos.Produtos.Produto">
+    <void property="categoria">
+     <string>alimento</string>
+    </void>
+    <void property="empresaId">
+     <int>2</int>
+    </void>
+    <void property="id">
+     <int>4</int>
+    </void>
+    <void property="nome">
+     <string>Pastel de queijo</string>
+    </void>
+    <void property="valor">
+     <float>5.0</float>
     </void>
    </object>
   </void>
  </object>
- <int>4</int>
+ <int>5</int>
 </java>
