@@ -1,10 +1,10 @@
 package br.ufal.ic.p2.myfood;
 
-import br.ufal.ic.p2.myfood.Modelos.Empresa.EmpresaManager;
-import br.ufal.ic.p2.myfood.Modelos.Pedidos.PedidoManager;
-import br.ufal.ic.p2.myfood.Modelos.Produtos.ProdutoManager;
-import br.ufal.ic.p2.myfood.Modelos.Usuario.UsuarioManager;
-import br.ufal.ic.p2.myfood.Modelos.Exceptions.*;
+import br.ufal.ic.p2.myfood.managers.EmpresaManager;
+import br.ufal.ic.p2.myfood.managers.PedidoManager;
+import br.ufal.ic.p2.myfood.managers.ProdutoManager;
+import br.ufal.ic.p2.myfood.managers.UsuarioManager;
+import br.ufal.ic.p2.myfood.exceptions.*;
 
 public class Facade {
     private UsuarioManager usuarioManager;
