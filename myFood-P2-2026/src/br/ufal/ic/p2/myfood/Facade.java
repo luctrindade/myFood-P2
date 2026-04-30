@@ -51,6 +51,10 @@ public class Facade {
         return empresaManager.criarEmpresas(tipoEmpresa,dono,nome,endereco,tipoCozinha);
     }
 
+    public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, String abre, String fecha, String tipoMercado) throws Exception{
+        return empresaManager.criarEmpresas(tipoEmpresa,dono,nome,endereco,abre,fecha,tipoMercado);
+    }
+
     public String getEmpresasDoUsuario(int donoId) throws Exception{
         return empresaManager.getEmpresaDoUsuario(donoId);
     }
@@ -104,5 +108,9 @@ public class Facade {
     }
     public void removerProduto(int pedido, String produto) throws Exception{
         pedidoManager.removerProduto(pedido,produto);
+    }
+
+    public void alterarFuncionamento(int mercado, String abre, String fecha) throws Exception{
+        empresaManager.alterarFuncionamento(mercado,abre,fecha);
     }
 }
