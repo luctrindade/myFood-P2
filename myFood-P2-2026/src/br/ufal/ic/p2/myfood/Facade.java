@@ -55,6 +55,10 @@ public class Facade {
         return empresaManager.criarEmpresas(tipoEmpresa,dono,nome,endereco,abre,fecha,tipoMercado);
     }
 
+    public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, Boolean aberto24, int numeroFuncionarios) throws Exception{
+        return empresaManager.criarEmpresas(tipoEmpresa,dono,nome,endereco,aberto24,numeroFuncionarios);
+    }
+
     public String getEmpresasDoUsuario(int donoId) throws Exception{
         return empresaManager.getEmpresaDoUsuario(donoId);
     }

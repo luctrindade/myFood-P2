@@ -1,6 +1,7 @@
 package br.ufal.ic.p2.myfood.managers;
 
 import br.ufal.ic.p2.myfood.modelos.Empresa.Empresa;
+import br.ufal.ic.p2.myfood.modelos.Empresa.Farmacia;
 import br.ufal.ic.p2.myfood.modelos.Empresa.Mercado;
 import br.ufal.ic.p2.myfood.modelos.Empresa.Restaurante;
 import br.ufal.ic.p2.myfood.modelos.Usuario.*;
@@ -119,6 +120,32 @@ public class EmpresaManager {
         return novo.getId();
     }
 
+    public int criarEmpresas(String tipoEmpresa, int donoId, String nome,String endereco, Boolean aberto24, int numeroFuncionarios) throws Exception{
+        if(tipoEmpresa == null || tipoEmpresa.isBlank() || !tipoEmpresa.equals("farmacia")) throw new TipoEmpresaInvalidoException();
+        if(nome == null || nome.isBlank()) throw new NomeInvalidoException();
+        if(endereco == null || endereco.isBlank()) throw new EnderecoEmpresaInvalidoException();
+
+        Usuario usuario = usuarioManager.getUsuario(donoId);
+        if(!(usuario instanceof Dono)){
+            throw new UsuarioNaoPodeCriarEmpresaException();
+        }
+
+        for (Empresa e : empresaList){
+            if(e.getNome().equals(nome)){
+                if(e.getDonoId() != donoId){
+                    throw new EmpresaJaExisteException();
+                }
+                else if(e.getEndereco().equals(endereco)){
+                    throw new EmpresaMesmoLocalException();
+                }
+            }
+        }
+
+        Farmacia novo = new Farmacia(gerarNovoId(),donoId,nome,endereco,aberto24,numeroFuncionarios);
+        empresaList.add(novo);
+        return novo.getId();
+    }
+
     public String getEmpresaDoUsuario(int donoId) throws Exception{
         Usuario usuario = usuarioManager.getUsuario(donoId);
         if(!(usuario instanceof Dono)){
@@ -194,6 +221,16 @@ public class EmpresaManager {
             case "fecha":
                 if(findEmpresa instanceof Mercado){
                     return ((Mercado) findEmpresa).getFecha();
+                }
+                throw new AtributoInvalidoException();
+            case "aberto24Horas":
+                if(findEmpresa instanceof Farmacia){
+                    return ((Farmacia) findEmpresa).getAberto24().toString();
+                }
+                throw new AtributoInvalidoException();
+            case "numeroFuncionarios":
+                if(findEmpresa instanceof Farmacia){
+                    return String.valueOf(((Farmacia) findEmpresa).getNumeroFuncionarios());
                 }
                 throw new AtributoInvalidoException();
             default:
