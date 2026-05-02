@@ -213,6 +213,7 @@ public class EmpresaManager {
                 if(findEmpresa instanceof Mercado){
                     return ((Mercado) findEmpresa).getTipoMercado();
                 }
+                throw new AtributoInvalidoException();
             case "abre":
                 if(findEmpresa instanceof Mercado){
                     return ((Mercado) findEmpresa).getAbre();
@@ -277,5 +278,80 @@ public class EmpresaManager {
         Mercado mercado = (Mercado) fEmpresa;
         mercado.setAbre(abre);
         mercado.setFecha(fecha);
+    }
+
+    public void cadastrarEntregador(int empresaId, int entregadorId) throws Exception{
+        Usuario usuario = usuarioManager.getUsuario(entregadorId);
+        if(!(usuario instanceof Entregador)){
+            throw new UsuarioNaoEntregadorException();
+        }
+        Empresa empresa = null;
+        for(Empresa e: empresaList){
+            if(e.getId() == empresaId){
+                empresa = e;
+                break;
+            }
+        }
+        if(empresa == null) throw new EmpresaNaoCadastradaException();
+        empresa.adicionarEntregador(entregadorId);
+    }
+
+    public String getEntregadores(int empresaId) throws Exception{
+        Empresa emp = null;
+        for(Empresa e : empresaList){
+            if(e.getId() == empresaId){
+                emp = e;
+                break;
+            }
+        }
+        if(emp == null) return "{[]}";
+
+        StringBuilder sb = new StringBuilder("{[");
+        boolean first = true;
+        for(Integer entregadorId : emp.getEntregadores()){
+            Usuario u = usuarioManager.getUsuario(entregadorId);
+            if(!first) sb.append(", ");
+            sb.append(u.getEmail());
+            first = false;
+        }
+        sb.append("]}");
+        return sb.toString();
+    }
+
+    public String getEmpresas(int entregadorId) throws Exception{
+        Usuario u = usuarioManager.getUsuario(entregadorId);
+        if(!(u instanceof Entregador)){
+            throw new UsuarioNaoEntregadorException();
+        }
+        StringBuilder sb = new StringBuilder("{[");
+        boolean first = true;
+        for(Empresa e : empresaList){
+            if(e.getEntregadores().contains(entregadorId)){
+                if(!first) sb.append(", ");
+                sb.append("[").append(e.getNome()).append(", ").append(e.getEndereco()).append("]");
+                first = false;
+            }
+        }
+        sb.append("]}");
+        return sb.toString();
+    }
+
+    public List<Empresa> getListaEmpresasEntregador(int  entregadorId){
+        List<Empresa> list = new ArrayList<>();
+        for(Empresa e : empresaList){
+            if(e.getEntregadores() != null && e.getEntregadores().contains(entregadorId)){
+                list.add(e);
+            }
+        }
+        return list;
+    }
+
+    public Empresa getEmpresa(int empresaId) throws Exception{
+        for(Empresa e : empresaList){
+            if(e.getId() == empresaId){
+                return e;
+            }
+        }
+        throw new EmpresaNaoCadastradaException();
     }
 }

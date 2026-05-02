@@ -1,14 +1,17 @@
 package br.ufal.ic.p2.myfood.modelos.Empresa;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Empresa {
     private int id;
     private int donoId;
     private String nome;
     private String endereco;
     private String tipoEmpresa;
-
+    private List<Integer> entregadores;
     public Empresa(){
-
+        this.entregadores = new ArrayList<>();
     }
 
     public Empresa(int id, int donoId, String nome, String endereco, String tipoEmpresa){
@@ -17,6 +20,7 @@ public class Empresa {
         this.nome = nome;
         this.endereco = endereco;
         this.tipoEmpresa = tipoEmpresa;
+        this.entregadores = new ArrayList<>();
     }
 
     public int getId() {
@@ -57,5 +61,17 @@ public class Empresa {
 
     public void setTipoEmpresa(String tipoEmpresa) {
         this.tipoEmpresa = tipoEmpresa;
+    }
+
+    public List<Integer> getEntregadores() {
+        return entregadores;
+    }
+
+    public void setEntregadores(List<Integer> entregadores) {
+        this.entregadores = entregadores;
+    }
+
+    public void adicionarEntregador(int entregadorId){
+        this.entregadores.add(entregadorId);
     }
 }
