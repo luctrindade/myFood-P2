@@ -2,6 +2,7 @@ package br.ufal.ic.p2.myfood.managers;
 
 import br.ufal.ic.p2.myfood.modelos.Usuario.Cliente;
 import br.ufal.ic.p2.myfood.modelos.Usuario.Dono;
+import br.ufal.ic.p2.myfood.modelos.Usuario.Entregador;
 import br.ufal.ic.p2.myfood.modelos.Usuario.Usuario;
 import br.ufal.ic.p2.myfood.exceptions.*;
 
@@ -87,6 +88,29 @@ public class UsuarioManager {
         proximoID++;
     }
 
+    public void criarUsuario(String nome, String email, String senha, String endereco, String veiculo, String placa)
+            throws NomeInvalidoException, EmailInvalidoException, SenhaInvalidaException, EnderecoInvalidoException, UsuarioJaExisteException {
+        if(veiculo == null || veiculo.isBlank()) throw new VeiculoInvalidoException();
+        if(placa == null || placa.isBlank()) throw new PlacaInvalidaException();
+        validarDados(nome,email,senha,endereco);
+        for(Usuario usuario : this.usuarioList){
+            if (usuario instanceof Entregador){
+                if(((Entregador) usuario).getPlaca().equals(placa)){
+                    throw new PlacaInvalidaException();
+                }
+            }
+        }
+        for(Usuario u : usuarioList){
+            if(u.getEmail().equals(email)){
+                throw new UsuarioJaExisteException();
+            }
+        }
+        this.usuarioList.add(new Entregador(proximoID,nome, email, senha, endereco,veiculo,placa));
+        proximoID++;
+    }
+
+
+
     public String getAtributoUsuario(int id, String atributo) throws Exception{
         Usuario usuario = null;
         for(Usuario u : usuarioList){
@@ -111,10 +135,18 @@ public class UsuarioManager {
                     return ((Dono) usuario).getCpf();
                 else
                     throw new AtributoInvalidoException();
-
             case "senha":
                 return usuario.getSenha();
-
+            case "veiculo":
+                if(usuario instanceof Entregador){
+                    return ((Entregador) usuario).getVeiculo();
+                }
+                throw new AtributoInvalidoException();
+            case "placa":
+                if(usuario instanceof Entregador){
+                    return ((Entregador) usuario).getPlaca();
+                }
+                throw new AtributoInvalidoException();
             default:
                 throw new AtributoInvalidoException();
         }

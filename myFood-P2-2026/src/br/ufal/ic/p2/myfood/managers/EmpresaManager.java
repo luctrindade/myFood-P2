@@ -1,6 +1,8 @@
 package br.ufal.ic.p2.myfood.managers;
 
 import br.ufal.ic.p2.myfood.modelos.Empresa.Empresa;
+import br.ufal.ic.p2.myfood.modelos.Empresa.Farmacia;
+import br.ufal.ic.p2.myfood.modelos.Empresa.Mercado;
 import br.ufal.ic.p2.myfood.modelos.Empresa.Restaurante;
 import br.ufal.ic.p2.myfood.modelos.Usuario.*;
 import br.ufal.ic.p2.myfood.exceptions.*;
@@ -50,6 +52,12 @@ public class EmpresaManager {
         }
     }
 
+    private int gerarNovoId(){
+        int fId = proximoId;
+        proximoId++;
+        return fId;
+    }
+
     public int criarEmpresas(String tipoEmpresa, int donoId, String nome,String endereco, String tipoCozinha) throws Exception{
         if(nome == null || nome.isBlank()) throw new NomeInvalidoException();
         if(endereco == null || endereco.isBlank()) throw new EnderecoInvalidoException();
@@ -77,6 +85,65 @@ public class EmpresaManager {
         int fId = proximoId;
         proximoId++;
         return fId;
+    }
+
+    public int criarEmpresas(String tipoEmpresa, int donoId, String nome,String endereco, String abre, String fecha, String tipoMercado) throws Exception{
+        if(tipoEmpresa == null || tipoEmpresa.isBlank() || !tipoEmpresa.equals("mercado")) throw new TipoEmpresaInvalidoException();
+        if(nome == null || nome.isBlank()) throw new NomeInvalidoException();
+        if(endereco == null || endereco.isBlank()) throw new EnderecoEmpresaInvalidoException();
+
+        if(tipoMercado == null || tipoMercado.isEmpty() || (!tipoMercado.equals("supermercado")
+                && !tipoMercado.equals("minimercado") && !tipoMercado.equals("atacadista"))){
+            throw new TipoMercadoInvalidoException();
+        }
+
+        validarHorario(abre,fecha);
+
+        Usuario usuario = usuarioManager.getUsuario(donoId);
+        if(!(usuario instanceof Dono)){
+            throw new UsuarioNaoPodeCriarEmpresaException();
+        }
+
+        for (Empresa e : empresaList){
+            if(e.getNome().equals(nome)){
+                if(e.getDonoId() != donoId){
+                    throw new EmpresaJaExisteException();
+                }
+                else if(e.getEndereco().equals(endereco)){
+                    throw new EmpresaMesmoLocalException();
+                }
+            }
+        }
+
+        Mercado novo = new Mercado(gerarNovoId(),donoId,nome,endereco,abre,fecha,tipoMercado);
+        empresaList.add(novo);
+        return novo.getId();
+    }
+
+    public int criarEmpresas(String tipoEmpresa, int donoId, String nome,String endereco, Boolean aberto24, int numeroFuncionarios) throws Exception{
+        if(tipoEmpresa == null || tipoEmpresa.isBlank() || !tipoEmpresa.equals("farmacia")) throw new TipoEmpresaInvalidoException();
+        if(nome == null || nome.isBlank()) throw new NomeInvalidoException();
+        if(endereco == null || endereco.isBlank()) throw new EnderecoEmpresaInvalidoException();
+
+        Usuario usuario = usuarioManager.getUsuario(donoId);
+        if(!(usuario instanceof Dono)){
+            throw new UsuarioNaoPodeCriarEmpresaException();
+        }
+
+        for (Empresa e : empresaList){
+            if(e.getNome().equals(nome)){
+                if(e.getDonoId() != donoId){
+                    throw new EmpresaJaExisteException();
+                }
+                else if(e.getEndereco().equals(endereco)){
+                    throw new EmpresaMesmoLocalException();
+                }
+            }
+        }
+
+        Farmacia novo = new Farmacia(gerarNovoId(),donoId,nome,endereco,aberto24,numeroFuncionarios);
+        empresaList.add(novo);
+        return novo.getId();
     }
 
     public String getEmpresaDoUsuario(int donoId) throws Exception{
@@ -142,8 +209,149 @@ public class EmpresaManager {
                     return ((Restaurante) findEmpresa).getTipoCozinha();
                 }
                 throw new AtributoInvalidoException();
+            case "tipoMercado":
+                if(findEmpresa instanceof Mercado){
+                    return ((Mercado) findEmpresa).getTipoMercado();
+                }
+                throw new AtributoInvalidoException();
+            case "abre":
+                if(findEmpresa instanceof Mercado){
+                    return ((Mercado) findEmpresa).getAbre();
+                }
+                throw new AtributoInvalidoException();
+            case "fecha":
+                if(findEmpresa instanceof Mercado){
+                    return ((Mercado) findEmpresa).getFecha();
+                }
+                throw new AtributoInvalidoException();
+            case "aberto24Horas":
+                if(findEmpresa instanceof Farmacia){
+                    return ((Farmacia) findEmpresa).getAberto24().toString();
+                }
+                throw new AtributoInvalidoException();
+            case "numeroFuncionarios":
+                if(findEmpresa instanceof Farmacia){
+                    return String.valueOf(((Farmacia) findEmpresa).getNumeroFuncionarios());
+                }
+                throw new AtributoInvalidoException();
             default:
                 throw new AtributoInvalidoException();
         }
+    }
+
+    private void validarHorario(String abre, String fecha) throws Exception{
+        if(abre == null || fecha == null){
+            throw new HorarioInvalidoException();
+        }
+
+        if(!abre.matches("^\\d{2}:\\d{2}$") || !fecha.matches("^\\d{2}:\\d{2}$")){
+            throw new FormatoHoraInvalidoException();
+        }
+
+        try{
+            java.time.LocalTime horaAbre = java.time.LocalTime.parse(abre);
+            java.time.LocalTime horaFecha = java.time.LocalTime.parse(fecha);
+
+            if(horaAbre.isAfter(horaFecha) || horaAbre.equals(horaFecha)){
+                throw new HorarioInvalidoException();
+            }
+        } catch(java.time.format.DateTimeParseException e){
+            throw new HorarioInvalidoException();
+        }
+    }
+
+    public void alterarFuncionamento(int empresaId, String abre, String fecha) throws Exception{
+        validarHorario(abre,fecha);
+
+        Empresa fEmpresa = null;
+        for(Empresa e : empresaList){
+            if(e.getId() == empresaId){
+                fEmpresa = e;
+                break;
+            }
+        }
+
+        if(!(fEmpresa instanceof Mercado)){
+            throw new NaoEUmMercadoValidoException();
+        }
+
+        Mercado mercado = (Mercado) fEmpresa;
+        mercado.setAbre(abre);
+        mercado.setFecha(fecha);
+    }
+
+    public void cadastrarEntregador(int empresaId, int entregadorId) throws Exception{
+        Usuario usuario = usuarioManager.getUsuario(entregadorId);
+        if(!(usuario instanceof Entregador)){
+            throw new UsuarioNaoEntregadorException();
+        }
+        Empresa empresa = null;
+        for(Empresa e: empresaList){
+            if(e.getId() == empresaId){
+                empresa = e;
+                break;
+            }
+        }
+        if(empresa == null) throw new EmpresaNaoCadastradaException();
+        empresa.adicionarEntregador(entregadorId);
+    }
+
+    public String getEntregadores(int empresaId) throws Exception{
+        Empresa emp = null;
+        for(Empresa e : empresaList){
+            if(e.getId() == empresaId){
+                emp = e;
+                break;
+            }
+        }
+        if(emp == null) return "{[]}";
+
+        StringBuilder sb = new StringBuilder("{[");
+        boolean first = true;
+        for(Integer entregadorId : emp.getEntregadores()){
+            Usuario u = usuarioManager.getUsuario(entregadorId);
+            if(!first) sb.append(", ");
+            sb.append(u.getEmail());
+            first = false;
+        }
+        sb.append("]}");
+        return sb.toString();
+    }
+
+    public String getEmpresas(int entregadorId) throws Exception{
+        Usuario u = usuarioManager.getUsuario(entregadorId);
+        if(!(u instanceof Entregador)){
+            throw new UsuarioNaoEntregadorException();
+        }
+        StringBuilder sb = new StringBuilder("{[");
+        boolean first = true;
+        for(Empresa e : empresaList){
+            if(e.getEntregadores().contains(entregadorId)){
+                if(!first) sb.append(", ");
+                sb.append("[").append(e.getNome()).append(", ").append(e.getEndereco()).append("]");
+                first = false;
+            }
+        }
+        sb.append("]}");
+        return sb.toString();
+    }
+
+    public List<Empresa> getListaEmpresasEntregador(int  entregadorId){
+        List<Empresa> list = new ArrayList<>();
+        for(Empresa e : empresaList){
+            if(e.getEntregadores() != null && e.getEntregadores().contains(entregadorId)){
+                list.add(e);
+            }
+        }
+        return list;
+    }
+
+    public Empresa getEmpresa(int empresaId) throws Exception{
+        for(Empresa e : empresaList){
+            if(e.getId() == empresaId){
+                return e;
+            }
+        }
+        throw new EmpresaNaoCadastradaException();
     }
 }

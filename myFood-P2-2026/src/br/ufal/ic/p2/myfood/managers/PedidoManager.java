@@ -157,6 +157,27 @@ public class PedidoManager {
         pedido.setEstado("preparando");
     }
 
+    public void liberarPedido(int numero) throws Exception{
+        Pedido fPedido = null;
+        for (Pedido p : pedidoList){
+            if(p.getNumero() == numero){
+                fPedido = p;
+                break;
+            }
+        }
+        if(fPedido == null) throw new PedidoNaoEncontradoException();
+
+        if(fPedido.getEstado().equals("pronto")){
+            throw new PedidoLiberadoException();
+        }
+
+        if(!fPedido.getEstado().equals("preparando")){
+            throw new NaoPossivelLiberarProdutoException();
+        }
+
+        fPedido.setEstado("pronto");
+    }
+
     public String getPedidos(int numeroPedido, String atributo) throws Exception{
         if(atributo == null || atributo.isBlank()) {
             throw new AtributoInvalidoException();
@@ -176,5 +197,23 @@ public class PedidoManager {
             default:
                 throw new AtributoNaoExisteException();
         }
+    }
+
+    public List<Pedido> getPedidosEstado(String estado){
+        List<Pedido> list = new ArrayList<>();
+        for(Pedido p : pedidoList){
+            if(p.getEstado().equals(estado)){
+                list.add(p);
+            }
+        }
+        return list;
+    }
+
+    public Pedido getPedidoNum(int numero) throws Exception{
+        for(Pedido p : pedidoList){
+            if(p.getNumero() == numero)
+                return p;
+        }
+        throw  new PedidoNaoEncontradoException();
     }
 }
