@@ -102,7 +102,7 @@ public class EntregaManager {
         if(pedidoAntigo != null) return pedidoAntigo.getNumero();
         throw new NaoExistePedidoEntregaException();
     }
-    public int crairEntrega(int pedidoId, int entregadorId, String destino) throws Exception{
+    public int criarEntrega(int pedidoId, int entregadorId, String destino) throws Exception{
         Pedido pedido = pedidoManager.getPedidoNum(pedidoId);
         if(!pedido.getEstado().equals("pronto")){
             throw new PedidoNaoProntoEntregaException();

@@ -64,7 +64,7 @@ public class Facade {
     }
 
     public int criarEntrega(int pedido, int entregador, String destino) throws Exception{
-        return entregaManager.crairEntrega(pedido,entregador,destino);
+        return entregaManager.criarEntrega(pedido,entregador,destino);
     }
 
     public String getEntrega(int id, String atributo) throws Exception{
